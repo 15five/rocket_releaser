@@ -1,3 +1,5 @@
+personal
+
 # ignore vscode workspace
 *.code-workspace
 # ignore python test results
