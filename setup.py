@@ -6,11 +6,11 @@ VERSION = "0.0.1"
 
 
 setup(
-    name="python-circleci-package-boilerplate",
+    name="rocket-releaser",
     version=VERSION,
     description="Your description here",
     long_description="see repo for readme",
-    url="https://github.com/15five/python-circleci-package-boilerplate",
+    url="https://github.com/15five/rocket-releaser",
     author="Your name here",
     author_email="Your email here",
     license="MIT",

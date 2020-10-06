@@ -1,4 +1,4 @@
-# python-circleci-package-boilerplate [![CircleCI](https://circleci.com/gh/15five/python-circleci-package-boilerplate.svg?style=svg&circle-token=f6c8494ec308088a8a65fe79e366763b02b38d9b)](https://circleci.com/gh/15five/python-circleci-package-boilerplate) [![PyPI version](https://badge.fury.io/py/python-circleci-package-boilerplate.svg)](https://badge.fury.io/py/python-circleci-package-boilerplate)
+# rocket-releaser [![CircleCI](https://circleci.com/gh/15five/rocket-releaser.svg?style=svg&circle-token=f6c8494ec308088a8a65fe79e366763b02b38d9b)](https://circleci.com/gh/15five/rocket-releaser) [![PyPI version](https://badge.fury.io/py/rocket-releaser.svg)](https://badge.fury.io/py/rocket-releaser)
 boilerplate repo you can use as a base for your python package.
 
 ## Features:
@@ -8,8 +8,8 @@ boilerplate repo you can use as a base for your python package.
 
 ## To Use:
 1. Copy Repo
-2. Replace all instances of "python-circleci-package-boilerplate" with your package name
-3. Replace "healthchecks_manager" folder name with package name. Do search/replace as well.
+2. Replace all instances of "rocket-releaser" with your package name
+3. Replace "rocket_releaser" folder name with package name. Do search/replace as well.
 4. Go over setup.py and configure it to your liking
 4. Replace code & tests
 5. Register project w/ circleci
