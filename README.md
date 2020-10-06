@@ -1,18 +1,15 @@
 # rocket-releaser [![CircleCI](https://circleci.com/gh/15five/rocket-releaser.svg?style=svg&circle-token=f6c8494ec308088a8a65fe79e366763b02b38d9b)](https://circleci.com/gh/15five/rocket-releaser) [![PyPI version](https://badge.fury.io/py/rocket-releaser.svg)](https://badge.fury.io/py/rocket-releaser)
-boilerplate repo you can use as a base for your python package.
+Library for creating release notes based on PR descriptions for a set of git changes
 
-## Features:
-* Package directory structure already laid out
-* **FULL** CI/CD through circleci with the works (black linting, pip caching, tests against multiple python versions, test summary, coverage results, automatic package deploy each push to master)
-* Makefile and other sensible files and configuration already present
+Example:
+```shell
+python release_notes.py github_token start_sha end_sha github_org github_repo -r repo_location --vpc_name staging --env_name staging --search_branch staging --slack_webhook_key slack_key
+```
 
-## To Use:
-1. Copy Repo
-2. Replace all instances of "rocket-releaser" with your package name
-3. Replace "rocket_releaser" folder name with package name. Do search/replace as well.
-4. Go over setup.py and configure it to your liking
-4. Replace code & tests
-5. Register project w/ circleci
-6. Set CIRCLE_TOKEN and PYPI_PASSWORD env vars
-7. Replace "caleb15" in `.circleci/config.yml` with your pypi username for package publishing
-8. Replace readme
+This would label PR's  inbetween first and second sha with "staging" and send the release notes to slack.
+If you are using a personal github account the "github_org" would be your github username.
+
+You can also pass in jira paramaters to label jira tickets.
+`--jira_token jiraToken --jira_username bob@company.com --jira_url https://company.atlassian.net`
+
+The github token must have "repo" scope access and the token's user must have write access to the repo.
