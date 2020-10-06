@@ -15,9 +15,9 @@ def mock_reqs(mocker):
 def test_main():
 
     # arguments dont really matter here
-    slack_text = release_notes.main(['github token', '0782415', '8038fc3', 'org_name', 'repo_name'
+    slack_text = release_notes.main(['github token', '0782415', '8038fc3', 'org_name', 'repo_name',
                                      '--search_branch', 'master', '--slack_webhook_key', 'fake slack key',
-                                     '--jira_token', 'fakeToken', '--jira_username', '', '--jira_url', 'https://company.atlassian.net'])
+                                     '--jira_username', 'bob@company.com', '--jira_url', 'https://company.atlassian.net'])
 
     # slack_text has variable time so we cant do exact comparison check :(
 

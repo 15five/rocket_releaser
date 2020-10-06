@@ -128,6 +128,9 @@ def main(args: List[str]):
     parser.add_argument('to_revision')
     parser.add_argument('org_name')
     parser.add_argument('repo_name')
+    parser.add_argument('-s', '--slack_webhook_key',
+                        help='Eg. "ABC457E/FElF56789FE/FLIELAJFLKAJLKEFFE"',
+                        default='')
     parser.add_argument('-r', '--repo_dir',
                         help=f'Defaults to current repo if you are inside a repository',
                         default='')
@@ -196,13 +199,13 @@ def main(args: List[str]):
         parsed_args.github_token,
         parsed_args.from_revision,
         parsed_args.to_revision,
-        parsed_args.org_name,
-        parsed_args.repo_name,
         parsed_args.slack_webhook_key,
         parsed_args.env_name,
         parsed_args.vpc_name,
         parsed_args.repo_dir,
         parsed_args.search_branch,
+        parsed_args.org_name,
+        parsed_args.repo_name,
         jira_token=parsed_args.jira_token,
         jira_username=parsed_args.jira_username,
         jira_url=parsed_args.jira_url,
