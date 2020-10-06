@@ -4,7 +4,7 @@ from random import randint
 import shutil
 import subprocess
 from git import Repo
-from shas import SHAs
+from rocketReleaser.shas import SHAs
 
 cherry_pick_commit_msg = """commit 3f9ba302b9d440caba0fc2ba1f19e3614e46a7f1
 feature

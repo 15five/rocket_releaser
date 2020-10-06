@@ -1,5 +1,5 @@
 import pytest
-from graphql import GraphQL, BadReturnStatus
+from rocketReleaser.graphql import GraphQL, BadReturnStatus
 
 g = GraphQL('')
 

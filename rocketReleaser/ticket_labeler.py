@@ -5,7 +5,7 @@ from typing import List
 import github3
 import jira
 
-from prs import PRs
+from .prs import PRs
 
 logger = logging.getLogger(__name__)
 

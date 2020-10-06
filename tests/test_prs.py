@@ -1,4 +1,4 @@
-from prs import PRs
+from rocketReleaser.prs import PRs
 import pytest
 from pytest_mock import MockFixture
 
@@ -39,7 +39,7 @@ p = PRs('fake token', '15five', 'fifteen5')
 def mock_graphql(mocker: MockFixture):
     global p
 
-    mocker.patch('prs.GraphQL', return_value=m)
+    mocker.patch('rocketReleaser.prs.GraphQL', return_value=m)
 
     yield
 

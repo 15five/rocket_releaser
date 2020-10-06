@@ -4,7 +4,7 @@
 # uncomment desired test, put in secret keys, and run manually
 # DONT FORGET TO TAKE KEYS OUT BEFORE COMMITING!!!!!
 #######################
-import release_notes
+from rocketReleaser import release_notes
 
 
 slack_text = release_notes.release_notes(

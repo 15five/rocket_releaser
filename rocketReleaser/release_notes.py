@@ -6,11 +6,11 @@ import subprocess
 from sys import stdout, argv
 from typing import List
 
-from changelog import ChangeLog
-from prs import PRs
-from shas import SHAs
-from slack import post_deployment_message_to_slack
-from ticket_labeler import TicketLabeler
+from .changelog import ChangeLog
+from .prs import PRs
+from .shas import SHAs
+from .slack import post_deployment_message_to_slack
+from .ticket_labeler import TicketLabeler
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

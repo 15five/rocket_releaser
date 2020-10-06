@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from graphql import GraphQL
+from .graphql import GraphQL
 
 logger = logging.getLogger(__name__)
 
