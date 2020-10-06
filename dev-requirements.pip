@@ -1,0 +1,12 @@
+-r requirements.txt
+# Linters
+black==19.10b0
+isort==4.3.20
+
+# Testing Libraries
+coverage==5.0.4
+pytest==5.1.1
+responses==0.10.6
+
+# Release Utilities
+twine==3.1.1
