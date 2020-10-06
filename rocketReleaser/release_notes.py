@@ -210,7 +210,3 @@ def main(args: List[str]):
         verbose=parsed_args.verbose,
         dry_run=parsed_args.dry_run,
     )
-
-
-if __name__ == '__main__':
-    main(argv[1:])
