@@ -8,7 +8,7 @@ VERSION = "0.0.1"
 setup(
     name="rocket-releaser",
     version=VERSION,
-    description="Your description here",
+    description="Script for release notes and labeling upon deploys",
     long_description="see repo for readme",
     url="https://github.com/15five/rocket-releaser",
     author="Your name here",
