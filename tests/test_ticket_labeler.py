@@ -1,8 +1,8 @@
-from rocketReleaser.ticket_labeler import TicketLabeler
+from rocket_releaser.ticket_labeler import TicketLabeler
 import pytest
 from pytest_mock import MockFixture
 from unittest.mock import Mock
-from rocketReleaser.prs import PRs
+from rocket_releaser.prs import PRs
 
 
 @pytest.fixture(autouse=True)

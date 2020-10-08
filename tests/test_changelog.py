@@ -1,4 +1,4 @@
-from rocketReleaser.changelog import ChangeLog
+from rocket_releaser.changelog import ChangeLog
 
 
 def test_release_bodies_should_recognize_releases():

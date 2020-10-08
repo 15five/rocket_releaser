@@ -6,11 +6,11 @@ VERSION = "0.0.1"
 
 
 setup(
-    name="rocket-releaser",
+    name="rocket_releaser",
     version=VERSION,
     description="Script for release notes and labeling upon deploys",
     long_description="see repo for readme",
-    url="https://github.com/15five/rocket-releaser",
+    url="https://github.com/15five/rocket_releaser",
     author="Your name here",
     author_email="Your email here",
     license="MIT",

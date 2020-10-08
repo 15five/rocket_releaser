@@ -1,4 +1,4 @@
-from rocketReleaser import release_notes
+from rocket_releaser import release_notes
 import pytest
 from pytest_mock import MockFixture
 from unittest.mock import Mock
@@ -9,8 +9,8 @@ from os import environ
 def mock_reqs(mocker):
     mocker.patch("github3.GitHub")
     mocker.patch("jira.JIRA")
-    mocker.patch("rocketReleaser.prs.GraphQL")
-    mocker.patch("rocketReleaser.slack.slacker")
+    mocker.patch("rocket_releaser.prs.GraphQL")
+    mocker.patch("rocket_releaser.slack.slacker")
 
 
 def test_main():
@@ -60,7 +60,7 @@ bla bla bla
         "merged": False,
     }
 
-    mocker.patch("rocketReleaser.prs.PRs.pull_request_dicts", return_value=[mock_pr_1])
+    mocker.patch("rocket_releaser.prs.PRs.pull_request_dicts", return_value=[mock_pr_1])
     slack_text = release_notes.release_notes(
         "github_token",
         "jira_token",
