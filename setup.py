@@ -30,6 +30,8 @@ setup(
     ],
     keywords="insert your keywords here",
     packages=find_packages(),
-    install_requires=["requests==2.22.0",],
+    install_requires=[
+        "requests==2.22.0",
+    ],
     python_requires=">=3.6",
 )

@@ -37,33 +37,46 @@ class TicketLabeler:
         "Reopen Issue": "811",
         "Start Progress": "801",
         "Start Testing": "791",
-        "Stop progress": "821"
+        "Stop progress": "821",
     }
 
     TRANSITION_KEYWORDS = [
-        'close',
-        'closes',
-        'closed',
-        'fix',
-        'fixes',
-        'fixed',
-        'resolve',
-        'resolves',
-        'resolved',
+        "close",
+        "closes",
+        "closed",
+        "fix",
+        "fixes",
+        "fixed",
+        "resolve",
+        "resolves",
+        "resolved",
     ]
 
-    JIRA_INFO_RE = re.compile(r'''
+    JIRA_INFO_RE = re.compile(
+        r"""
         (?P<transition>{transition_kw_options})?  # optional keywords that mark Jira transitions
         \s*                                       # optional whitespace character
         (?P<issue>\[*[A-Z]{{2,}}-\d+\]*)          # Jira issue name. Match examples: [ENG-123], ENG-123, DIV-1234
-    '''.format(transition_kw_options='|'.join(TRANSITION_KEYWORDS)), flags=re.VERBOSE | re.IGNORECASE)
+    """.format(
+            transition_kw_options="|".join(TRANSITION_KEYWORDS)
+        ),
+        flags=re.VERBOSE | re.IGNORECASE,
+    )
 
-    PREVIEW_ENV_NAME: str = 'preview'
-    STAGING_ENV_NAME: str = 'staging'
-    PRODUCTION_ENV_NAME: str = 'production'
+    PREVIEW_ENV_NAME: str = "preview"
+    STAGING_ENV_NAME: str = "staging"
+    PRODUCTION_ENV_NAME: str = "production"
 
-    def __init__(self, githubToken: str, pull_request_dicts: List[dict], repo_owner: str,
-                 repo_name: str, jira_token: str = '', jira_username: str = '', jira_url: str = ''):
+    def __init__(
+        self,
+        githubToken: str,
+        pull_request_dicts: List[dict],
+        repo_owner: str,
+        repo_name: str,
+        jira_token: str = "",
+        jira_username: str = "",
+        jira_url: str = "",
+    ):
         """
         :param githubToken: GitHub oauth githubToken
         """
@@ -76,7 +89,8 @@ class TicketLabeler:
         self.gh = github3.GitHub(token=self.githubToken)
 
         # documentation claims you need to use username/password combo but username/token works as well
-        if jira_token: self.jira = jira.JIRA(jira_url, basic_auth=(jira_username, self.jira_token))
+        if jira_token:
+            self.jira = jira.JIRA(jira_url, basic_auth=(jira_username, self.jira_token))
 
     def label_tickets(self, env_name: str, vpc_name: str, dry_run=False) -> int:
         """
@@ -91,7 +105,7 @@ class TicketLabeler:
 
         jira_ticket_name_list = []
 
-        label: str = f'{vpc_name}({env_name})' if vpc_name != env_name else env_name
+        label: str = f"{vpc_name}({env_name})" if vpc_name != env_name else env_name
 
         for pr in self.pull_request_dicts:
 
@@ -99,46 +113,53 @@ class TicketLabeler:
             pr_num = pr.get("number")
 
             try:
-                logger.info(f'labeling pr #{pr_num} {title} at '
-                            f'https://github.com/{self.repo_owner}/{self.repo_name}/pull/{pr_num} with {label}')
+                logger.info(
+                    f"labeling pr #{pr_num} {title} at "
+                    f"https://github.com/{self.repo_owner}/{self.repo_name}/pull/{pr_num} with {label}"
+                )
                 if not dry_run:
                     self.label_pr_or_issue(pr, label)
 
             except github3.exceptions.GitHubException:
-                logger.exception('Error during labeling: ')
+                logger.exception("Error during labeling: ")
 
-            if not self.jira_token: continue
+            if not self.jira_token:
+                continue
 
             jira_ticket_maps = []
-            jira_ticket_maps_title = self.get_jira_ticket_maps(pr.get('title', ''))
-            jira_ticket_maps_body = self.get_jira_ticket_maps(pr.get('body', ''))
+            jira_ticket_maps_title = self.get_jira_ticket_maps(pr.get("title", ""))
+            jira_ticket_maps_body = self.get_jira_ticket_maps(pr.get("body", ""))
 
             for jira_ticket_map_title in jira_ticket_maps_title:
                 jira_ticket_maps.append(jira_ticket_map_title)
 
             for jira_ticket_map_body in jira_ticket_maps_body:
-                if jira_ticket_map_body.get('transition'):
+                if jira_ticket_map_body.get("transition"):
                     jira_ticket_maps.append(jira_ticket_map_body)
                 # we ignore tickets without transition in body because they may be unrelated
                 # ex: "this story is similar to ENG-4235" ~ we dont want to label ENG-4235
 
             if not jira_ticket_maps:
-                logger.warning(f'couldnt find jira # in pr #{pr_num} {title}')
+                logger.warning(f"couldnt find jira # in pr #{pr_num} {title}")
                 continue
 
             # ugly hack ~ by converting to dict & back we ensure we dont have duplicate issues
             # (same issue may be mentioned in title and again in body)
-            jira_ticket_maps = list({map['issue']: map for map in jira_ticket_maps}.values())
+            jira_ticket_maps = list(
+                {map["issue"]: map for map in jira_ticket_maps}.values()
+            )
 
             for jira_ticket_map in jira_ticket_maps:
-                jira_ticket_name = jira_ticket_map.get('issue')
-                transition_kw = jira_ticket_map.get('transition')
+                jira_ticket_name = jira_ticket_map.get("issue")
+                transition_kw = jira_ticket_map.get("transition")
 
                 try:
                     if jira_ticket_name not in jira_ticket_name_list:
                         jira_ticket_name_list.append(jira_ticket_name)
-                    logger.info(f'labeling jira ticket at {self.jira_url}/browse/{jira_ticket_name}'
-                                f' with {label}')
+                    logger.info(
+                        f"labeling jira ticket at {self.jira_url}/browse/{jira_ticket_name}"
+                        f" with {label}"
+                    )
                     issue = self.jira.issue(jira_ticket_name)
 
                     # a ticket may have more than one PR
@@ -146,13 +167,17 @@ class TicketLabeler:
                     if transition_kw:
 
                         if env_name == self.PREVIEW_ENV_NAME:
-                            logger.info('env_name matches preview - making sure if ticket is still in progress '
-                                        'its marked in review')
+                            logger.info(
+                                "env_name matches preview - making sure if ticket is still in progress "
+                                "its marked in review"
+                            )
                             if not dry_run:
                                 self.mark_in_review_jira_ticket(issue)
 
                         elif env_name == self.STAGING_ENV_NAME:
-                            logger.info('env_name matches staging - marking jira ticket as ready to test')
+                            logger.info(
+                                "env_name matches staging - marking jira ticket as ready to test"
+                            )
                             if not dry_run:
                                 self.mark_ready_test_jira_ticket(issue)
 
@@ -168,7 +193,7 @@ class TicketLabeler:
                         self.label_jira_ticket(issue, jira_ticket_name, label)
 
                 except (jira.exceptions.JIRAError, ValueError):
-                    logger.exception('error with ' + str(title))
+                    logger.exception("error with " + str(title))
 
         return len(jira_ticket_name_list)
 
@@ -194,22 +219,19 @@ class TicketLabeler:
             info_dict = match_object.groupdict()
 
             # lowercase the transition keyword if it is found
-            transition = info_dict.get('transition')
+            transition = info_dict.get("transition")
             if transition:
                 transition = transition.lower()
 
             # remove brackets and uppercase the issue name
-            issue = info_dict.get('issue', '').replace('[', '').replace(']', '').upper()
+            issue = info_dict.get("issue", "").replace("[", "").replace("]", "").upper()
 
             # edge case: 1-on-1 looks like a issue to regex, so we filter that out
             # alternatively we could require brackets surrounding issue
-            if issue == 'ON-1':
+            if issue == "ON-1":
                 continue
 
-            cleaned_dict = {
-                'transition': transition,
-                'issue': issue
-            }
+            cleaned_dict = {"transition": transition, "issue": issue}
             cleaned_info_list.append(cleaned_dict)
 
         return cleaned_info_list
@@ -224,8 +246,8 @@ class TicketLabeler:
 
     def label_jira_ticket(self, issue, ticket_name, label):
 
-        if ' ' in label:
-            raise ValueError('labels can\'t have spaces!')
+        if " " in label:
+            raise ValueError("labels can't have spaces!")
 
         if label not in issue.fields.labels:
             issue.update(fields={"labels": issue.fields.labels + [label]})
@@ -239,13 +261,22 @@ class TicketLabeler:
         if issue is None:
             raise TypeError("issue is None - issue should be of type jira.Issue")
 
-        if issue.fields.status.name != 'Closed' and issue.fields.status.name != 'Deployed':
-            self.jira.transition_issue(issue, self.TRANSITION_IDS['Close'], fields={"resolution": {'name': 'Done'}},
-                                       comment='auto transitioned by deploy')
+        if (
+            issue.fields.status.name != "Closed"
+            and issue.fields.status.name != "Deployed"
+        ):
+            self.jira.transition_issue(
+                issue,
+                self.TRANSITION_IDS["Close"],
+                fields={"resolution": {"name": "Done"}},
+                comment="auto transitioned by deploy",
+            )
 
-        if issue.fields.status.name != 'Deployed':
+        if issue.fields.status.name != "Deployed":
             # Note that you can't comment when transitioning to Deployed status
-            self.jira.transition_issue(issue, self.TRANSITION_IDS['Deployed'], comment='')
+            self.jira.transition_issue(
+                issue, self.TRANSITION_IDS["Deployed"], comment=""
+            )
 
     def mark_ready_test_jira_ticket(self, issue: jira.Issue):
         """
@@ -254,8 +285,8 @@ class TicketLabeler:
         if issue is None:
             raise TypeError("issue is None - issue should be of type jira.Issue")
 
-        if issue.fields.status.name in ('Reopened', 'Open', 'In Progress', 'In Review'):
-            self.jira.transition_issue(issue, self.TRANSITION_IDS['Ready to Test'])
+        if issue.fields.status.name in ("Reopened", "Open", "In Progress", "In Review"):
+            self.jira.transition_issue(issue, self.TRANSITION_IDS["Ready to Test"])
 
     def mark_in_review_jira_ticket(self, issue: jira.Issue):
         """
@@ -264,5 +295,5 @@ class TicketLabeler:
         if issue is None:
             raise TypeError("issue is None - issue should be of type jira.Issue")
 
-        if issue.fields.status.name in ('Reopened', 'Open', 'In Progress'):
-            self.jira.transition_issue(issue, self.TRANSITION_IDS['Code Review'])
+        if issue.fields.status.name in ("Reopened", "Open", "In Progress"):
+            self.jira.transition_issue(issue, self.TRANSITION_IDS["Code Review"])

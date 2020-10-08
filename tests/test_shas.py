@@ -203,11 +203,11 @@ __2019-03-07.1 - to staging (hotfix)
 """
 
 
-def commit_random_file(branch='master'):
+def commit_random_file(branch="master"):
     # see https://gitpython.readthedocs.io/en/stable/tutorial.html
     filename = str(randint(0, 999999999))
     new_file_path = path.join(repo.working_tree_dir, filename)
-    open(new_file_path, 'wb').close()  # create new file in working tree
+    open(new_file_path, "wb").close()  # create new file in working tree
     repo.index.add([new_file_path])  # add it to the index
     # Commit the changes to deviate masters history
     return repo.index.commit("Added " + filename)
@@ -240,8 +240,8 @@ def test_get_shas_internal():
 def test_cherry_picked_sha():
     shas_list = shas._get_shas(cherry_pick_commit_msg)
     assert len(shas_list) == 2
-    assert shas_list[0] == '3f9ba302b9d440caba0fc2ba1f19e3614e46a7f1'
-    assert shas_list[1] == 'c8e9114beabca79e4497f9ea40499c80cebe902a'
+    assert shas_list[0] == "3f9ba302b9d440caba0fc2ba1f19e3614e46a7f1"
+    assert shas_list[1] == "c8e9114beabca79e4497f9ea40499c80cebe902a"
 
 
 def test_get_shas_empty_when_no_changes():
@@ -253,15 +253,15 @@ def test_old_commit_in_shas():
     # a old commit should still be in shas even if chronologically before last deploy
 
     # create & checkout (-b) branch
-    branch_name = 'old_branch'
-    repo.git.checkout('-b', branch_name)
+    branch_name = "old_branch"
+    repo.git.checkout("-b", branch_name)
 
     # create old commit
     old_commit = commit_random_file(branch=branch_name)
 
     # create newer commit (realistically this would be another merge, but doesn't matter)
     # we pretend user has deployed this commit
-    repo.git.checkout('master')
+    repo.git.checkout("master")
     last_deployed_commit = commit_random_file()
 
     # merge old commit into master
@@ -279,7 +279,7 @@ def test_old_commit_in_shas():
 
 
 def test_not_in_range():
-    assert not shas.get_shas('nonexistant sha', 'nonexistant sha')
+    assert not shas.get_shas("nonexistant sha", "nonexistant sha")
 
 
 def teardown_module():
