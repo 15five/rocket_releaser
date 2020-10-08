@@ -4,7 +4,7 @@ from random import randint
 import shutil
 import subprocess
 from git import Repo
-from rocket_releaser.shas import SHAs
+from rocket_releaser.shas import branch_exists, SHAs
 
 cherry_pick_commit_msg = """commit 3f9ba302b9d440caba0fc2ba1f19e3614e46a7f1
 feature
@@ -118,6 +118,13 @@ def test_old_commit_in_shas():
 
 def test_not_in_range():
     assert not shas.get_shas("nonexistant sha", "nonexistant sha")
+
+
+def test_branch_exists():
+    assert branch_exists(tmp_dirpath, "master")
+    assert not branch_exists(
+        tmp_dirpath, "did-you-know-that-cashews-came-from-a-fruit?"
+    )
 
 
 def teardown_module():

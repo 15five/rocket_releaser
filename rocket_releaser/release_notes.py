@@ -8,7 +8,7 @@ from typing import List
 
 from .changelog import ChangeLog
 from .prs import PRs
-from .shas import SHAs
+from .shas import branch_exists, SHAs
 from .slack import post_deployment_message_to_slack
 from .ticket_labeler import TicketLabeler
 
@@ -103,6 +103,9 @@ def release_notes(
 
     if not repo_dir:
         repo_dir = get_default_repo_dir()
+
+    if not branch_exists(repo_dir, search_branch):
+        raise ValueError(search_branch + " branch does not exist in " + repo_dir)
 
     logger.info(
         f"Pulling deploy SHAs from {search_branch} branch in {repo_dir}. {from_revision}...{to_revision}"

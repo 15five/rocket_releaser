@@ -7,6 +7,17 @@ import re
 logger = logging.getLogger(__name__)
 
 
+def branch_exists(repo_dir: str, branch_name: str):
+    try:
+        base_args = ["git", f'--git-dir={path.join(repo_dir, ".git")}']
+        subprocess.check_call(
+            base_args + ["show-ref", "--verify", "--quiet", "refs/heads/" + branch_name]
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
 class SHAs:
     def __init__(self, repo_dir: str, fetch_before: bool = True):
         """
