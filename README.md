@@ -3,7 +3,7 @@ Library for creating release notes based on PR descriptions for a set of git cha
 
 Example:
 ```shell
-python -m release_notes github_token start_sha end_sha github_org github_repo -r repo_location --vpc_name staging --env_name staging --search_branch staging --slack_webhook_key slack_key
+python -m rocket_releaser github_token start_sha end_sha github_org github_repo -r repo_location --vpc_name staging --env_name staging --search_branch staging --slack_webhook_key slack_key
 ```
 
 This would label PR's inbetween first and second sha with "staging" and send the release notes to slack.
