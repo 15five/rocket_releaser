@@ -193,8 +193,8 @@ def main(args: List[str]):
         default="",
     )
     parser.add_argument("-b", "--search_branch", help='Default is "dev"', default="dev")
-    parser.add_argument("-e", "--env_name", help='Eg. "preview"', default="preview")
-    parser.add_argument("-V", "--vpc_name", help='Eg. "cloud100"', default="cloud100")
+    parser.add_argument("-e", "--env_name", help='Eg. "staging"', default="staging")
+    parser.add_argument("-V", "--vpc_name", help='Eg. "staging_1"', default="staging_1")
     parser.add_argument(
         "-l",
         "--dont_label_tickets",
