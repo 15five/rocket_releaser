@@ -1,4 +1,4 @@
-# rocket-releaser [![CircleCI](https://circleci.com/gh/15five/rocket-releaser.svg?style=svg&circle-token=f6c8494ec308088a8a65fe79e366763b02b38d9b)](https://circleci.com/gh/15five/rocket-releaser) [![PyPI version](https://badge.fury.io/py/rocket-releaser.svg)](https://badge.fury.io/py/rocket-releaser)
+# rocket-releaser [![CircleCI](https://circleci.com/gh/15five/rocketReleaser.svg?style=svg&circle-token=022a3a89718d088ac8a737b2d03280c4c1864ed0)](https://circleci.com/gh/15five/rocketReleaser) [![PyPI version](https://badge.fury.io/py/rocket-releaser.svg)](https://badge.fury.io/py/rocketReleaser)
 Library for creating release notes based on PR descriptions for a set of git changes
 
 Example:
