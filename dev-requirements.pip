@@ -5,7 +5,7 @@ isort==4.3.20
 
 # Testing Libraries
 coverage==5.0.4
-pytest==5.1.1
+pytest==5.2.0
 GitPython==2.1.13
 
 # Release Utilities
