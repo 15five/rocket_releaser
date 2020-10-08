@@ -39,7 +39,7 @@ def test_main():
     # slack text should be present
     assert slack_text
     # slack text should say env of deployment
-    assert "preview".upper() in slack_text
+    assert "staging".upper() in slack_text
     # slack text should have link to github diff of commits
     assert "0782415" in slack_text and "8038fc3" in slack_text
     # because we mocked dependencies no PR's / tickets should be found
