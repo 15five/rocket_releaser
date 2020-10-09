@@ -14,6 +14,6 @@ If you are using a personal github account the "github_org" would be your github
 
 The github token must have "repo" scope access and the token's user must have write access to the repo.
 
-You can also pass in Jira paramaters to label Jira tickets. 
+You can also pass in Jira paramaters to label Jira tickets.
 
 `--jira_token jiraToken --jira_username bob@company.com --jira_url https://company.atlassian.net`
