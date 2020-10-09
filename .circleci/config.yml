@@ -121,7 +121,7 @@ jobs:
           name: run integration test
           command: |
             . venv/bin/activate
-            python -m rocket_releaser $GITHUB_TOKEN a6969e7 a1286d3 15five rocket_releaser --vpc_name production_1 --env_name production --search_branch master
+            python -m rocket_releaser $GITHUB_TOKEN 82a86d4 9253704 15five rocket_releaser --vpc_name production_1 --env_name production --search_branch master
       - run:
           name: Compress Artifacts
           command: tar -cvf htmlcov.tar htmlcov
