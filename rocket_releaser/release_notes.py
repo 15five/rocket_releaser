@@ -91,7 +91,7 @@ def release_notes(
     search_branch: str = "master",
     slack_webhook_key: str = "",
     env_name: str = "prod",
-    vpc_name: str = "prod_1",
+    vpc_name: str = "prod",
     jira_token: str = "",
     jira_username: str = "",
     jira_url: str = "",
@@ -199,7 +199,12 @@ def main(args: List[str]):
         default="",
     )
     parser.add_argument("-e", "--env_name", help='Eg. "prod"', default="prod")
-    parser.add_argument("-V", "--vpc_name", help='Eg. "prod_1"', default="prod_1")
+    parser.add_argument(
+        "-V",
+        "--vpc_name",
+        help='Eg. "prod_1". If you dont have a VPC use the same value as env_name.',
+        default="prod",
+    )
     parser.add_argument(
         "-l",
         "--dont_label_tickets",
