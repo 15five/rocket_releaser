@@ -23,8 +23,6 @@ def test_main():
             "8038fc3",
             "org_name",
             "repo_name",
-            "--search_branch",
-            "master",
             "--slack_webhook_key",
             "fake slack key",
             "--jira_username",
@@ -39,7 +37,7 @@ def test_main():
     # slack text should be present
     assert slack_text
     # slack text should say env of deployment
-    assert "staging".upper() in slack_text
+    assert "prod".upper() in slack_text
     # slack text should have link to github diff of commits
     assert "0782415" in slack_text and "8038fc3" in slack_text
     # because we mocked dependencies no PR's / tickets should be found
@@ -65,11 +63,6 @@ bla bla bla
         "github_token",
         "0782415",
         "8038fc3",
-        "slack_webhook_key",
-        "env_name",
-        "vpc_name",
-        "",  # defaults to this repo
-        "master",
         "org_name",
         "repo_name",
         jira_token="jira_token",

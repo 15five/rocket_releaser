@@ -8,14 +8,14 @@ from rocket_releaser import release_notes
 
 
 slack_text = release_notes.release_notes(
-    "github key",
-    "82a86d4",
-    "9253704",
-    "slack key",
-    "staging",
-    "staging",
+    "***REMOVED***",
+    "73e006e",
+    "dd10ce4",
+    "15five",
+    "dev",
+    "dev",
     "",
-    "master",
+    "dev",
     "15five",
     "rocket_releaser",
 )

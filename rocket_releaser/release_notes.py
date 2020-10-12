@@ -85,13 +85,13 @@ def release_notes(
     github_token: str,
     from_revision: str,
     to_revision: str,
-    slack_webhook_key: str,
-    env_name: str,
-    vpc_name: str,
-    repo_dir: str,
-    search_branch: str,
     org_name: str,
     repo_name: str,
+    repo_dir: str = None,
+    search_branch: str = "master",
+    slack_webhook_key: str = "",
+    env_name: str = "prod",
+    vpc_name: str = "prod_1",
     jira_token: str = "",
     jira_username: str = "",
     jira_url: str = "",
@@ -184,20 +184,22 @@ def main(args: List[str]):
     parser.add_argument("org_name")
     parser.add_argument("repo_name")
     parser.add_argument(
-        "-s",
-        "--slack_webhook_key",
-        help='Eg. "ABC457E/FElF56789FE/FLIELAJFLKAJLKEFFE"',
-        default="",
-    )
-    parser.add_argument(
         "-r",
         "--repo_dir",
         help=f"Defaults to current repo if you are inside a repository",
         default="",
     )
-    parser.add_argument("-b", "--search_branch", help='Default is "dev"', default="dev")
-    parser.add_argument("-e", "--env_name", help='Eg. "staging"', default="staging")
-    parser.add_argument("-V", "--vpc_name", help='Eg. "staging_1"', default="staging_1")
+    parser.add_argument(
+        "-b", "--search_branch", help='Default is "master"', default="master"
+    )
+    parser.add_argument(
+        "-s",
+        "--slack_webhook_key",
+        help='Eg. "ABC457E/FElF56789FE/FLIELAJFLKAJLKEFFE"',
+        default="",
+    )
+    parser.add_argument("-e", "--env_name", help='Eg. "prod"', default="prod")
+    parser.add_argument("-V", "--vpc_name", help='Eg. "prod_1"', default="prod_1")
     parser.add_argument(
         "-l",
         "--dont_label_tickets",
@@ -243,11 +245,11 @@ def main(args: List[str]):
                 "to_revision": parsed_args.to_revision,
                 "org_name": parsed_args.org_name,
                 "repo_name": parsed_args.repo_name,
+                "repo_dir": parsed_args.repo_dir,
+                "search_branch": parsed_args.search_branch,
                 "slack_webhook_key": "CENSORED",
                 "env_name": parsed_args.env_name,
                 "vpc_name": parsed_args.vpc_name,
-                "repo_dir": parsed_args.repo_dir,
-                "search_branch": parsed_args.search_branch,
                 "label_tickets": parsed_args.label_tickets,
                 "verbose": parsed_args.verbose,
                 "dry_run": parsed_args.dry_run,
@@ -266,13 +268,13 @@ def main(args: List[str]):
         parsed_args.github_token,
         parsed_args.from_revision,
         parsed_args.to_revision,
-        parsed_args.slack_webhook_key,
-        parsed_args.env_name,
-        parsed_args.vpc_name,
-        parsed_args.repo_dir,
-        parsed_args.search_branch,
         parsed_args.org_name,
         parsed_args.repo_name,
+        repo_dir=parsed_args.repo_dir,
+        search_branch=parsed_args.search_branch,
+        slack_webhook_key=parsed_args.slack_webhook_key,
+        env_name=parsed_args.env_name,
+        vpc_name=parsed_args.vpc_name,
         jira_token=parsed_args.jira_token,
         jira_username=parsed_args.jira_username,
         jira_url=parsed_args.jira_url,
