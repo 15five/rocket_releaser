@@ -17,3 +17,24 @@ The github token must have "repo" scope access and the token's user must have wr
 You can also pass in Jira paramaters to label Jira tickets. 
 
 `--jira_token jiraToken --jira_username bob@company.com --jira_url https://company.atlassian.net`
+
+## PR format:
+To label PR's and tickets your PR's should be formatted like so:
+```
+<!-- Detailed PR description for reviewers goes here... --> 
+
+RELEASES
+Change default avatar image #public Closes [ENG-1234]
+
+<!--
+- Newline after RELEASES (need this for proper formatting in slack).
+- Add a helpful description!
+- Try to make it human readable.
+- Keep it a single line.
+- Add the ticket number in square brackets.
+- Indicate whether the release will close or fix a ticket with Closes or Fixes before the ticket number.
+-->
+
+QA
+default avatar image should be a penguin [ENG-1234]
+```
