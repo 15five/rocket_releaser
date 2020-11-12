@@ -24,7 +24,7 @@ class MockGraphQL:
 
 
 m = MockGraphQL()
-p = PRs("fake token", "15five", "fifteen5")
+p = PRs("fake token", "15five", "repoName")
 
 
 @pytest.fixture(autouse=True)
@@ -36,7 +36,7 @@ def mock_graphql(mocker: MockFixture):
     yield
 
     # reset prs so tests dont affect eachother
-    p = PRs("fake token", "15five", "fifteen5")
+    p = PRs("fake token", "15five", "repoName")
 
 
 def test_pull_request_dicts_should_have_correct_content():
