@@ -41,7 +41,38 @@ QA
 default avatar image should be a penguin [ENG-1234]
 ```
 
+## Using Ansible?:
+
+You can run Rocket Releaser in ansible like so:
+```yml
+- name: Install release-notes python requirements
+  pip:
+    name: rocket-releaser
+    version: 0.0.3
+    executable: /path/to/venv/venv_name/py3/bin/pip3
+  when: inventory_hostname == groups['your-server-group'][0] # Just run once
+  become_user: fifteen5
+
+- name: Post release notes to slack
+  shell: >
+    /path/to/venv/venv_name/py3/bin/python -m rocket_releaser
+    {{ github_api_token }}
+    {{ old_deploy_revision_sha }}
+    {{ deploy_revision_sha }}
+    yourOrgName
+    yourRepoName
+    --repo_dir /your/repo/path
+    --search_branch {{ deploy_revision }}
+    --slack_webhook_key {{ slack_webhook_key }}
+    --env_name {{ env_name }}
+    --vpc_name {{ vpc_name }}
+    --verbose
+  when: inventory_hostname == groups['your-server-group'][0] # Just run once
+```
+This assumes you already have a python 3 venv installed on your server and ansible already set up with the {{ }} vars.
+
 ## FAQ:
 Q: Why use this over [semantic-release](https://github.com/semantic-release/semantic-release)?
 
 A: Semantic-release's [slack plugin](https://github.com/juliuscc/semantic-release-slack-bot) as of 05/21 does not generate an extended changelog. Semantic Release does not have a plugin for tagging github PR's or tickets either, as far as I am aware.
+
