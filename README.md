@@ -70,3 +70,9 @@ You can run Rocket Releaser in ansible like so:
   when: inventory_hostname == groups['your-server-group'][0] # Just run once
 ```
 This assumes you already have a python 3 venv installed on your server and ansible already set up with the {{ }} vars.
+
+## FAQ:
+Q: Why use this over [semantic-release](https://github.com/semantic-release/semantic-release)?
+
+A: Semantic-release's [slack plugin](https://github.com/juliuscc/semantic-release-slack-bot) as of 05/21 does not generate an extended changelog. Semantic Release does not have a plugin for tagging github PR's or tickets either, as far as I am aware.
+

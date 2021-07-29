@@ -208,7 +208,7 @@ def main(args: List[str]):
     parser.add_argument(
         "-l",
         "--dont_label_tickets",
-        help="if you skip labeling tickets the jira token wont matter",
+        help="If you skip labeling tickets the jira token won't matter",
         action="store_false",
         dest="label_tickets",
         default=True,
