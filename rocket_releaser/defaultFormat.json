@@ -1,0 +1,33 @@
+{
+    "note_format": "• $DESCRIPTION <$TICKET_LINK|$TICKET_ID> <$PR_LINK|PR-$PR_ID>",
+    "release_notes_slack_format": {
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Release $RELEASE_NUMBER"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "$RELEASE_NOTES"
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Changeset*: <$CHANGESET_LINK|$CHANGESET>\n*Stats*: $JIRA_TICKETS_NUM Jira tickets | $PR_TICKETS_NUM PR's\n*CI Build*: <$CI_LINK|$CI_ID>"
+                    }
+                ]
+            }
+        ]
+    }
+}
