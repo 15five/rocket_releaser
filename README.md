@@ -76,3 +76,9 @@ Q: Why use this over [semantic-release](https://github.com/semantic-release/sema
 
 A: Semantic-release's [slack plugin](https://github.com/juliuscc/semantic-release-slack-bot) as of 05/21 does not generate an extended changelog. Semantic Release does not have a plugin for tagging github PR's or tickets either, as far as I am aware.
 
+## Contributing to this repo:
+We welcome contributions! 
+
+* To setup the repo run `python -m pip install -r dev-requirements.pip`.
+* To run the script run `python -m rocket_releaser` from the root of the repo with your desired arguments. Trying to run the release notes script from the command line directly will result in a ImportError!
+* To run tests run `pytest` from the root of the repo
