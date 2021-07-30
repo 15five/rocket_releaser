@@ -1,6 +1,7 @@
 {
     "note_format": "• $DESCRIPTION <$TICKET_LINK|$TICKET_ID> <$PR_LINK|PR-$PR_ID>",
-    "release_notes_slack_format": {
+    "plaintext_format": "Release $RELEASE_NUMBER\n$RELEASE_NOTES\n*Changeset*: <$CHANGESET_LINK|$CHANGESET>\n*Stats*: $JIRA_TICKETS_NUM Jira tickets | $PR_TICKETS_NUM PR's",
+    "slack_format": {
         "blocks": [
             {
                 "type": "header",
