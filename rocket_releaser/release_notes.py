@@ -1,7 +1,6 @@
 import argparse
 import datetime
 import logging
-import re
 import subprocess
 from sys import stdout, argv
 from typing import List
