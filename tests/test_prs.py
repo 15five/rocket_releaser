@@ -23,6 +23,12 @@ class MockGraphQL:
             "node"
         ] = node
 
+    def set_no_associated_prs(self):
+        self.val["data"]["repository"]["commit"]["associatedPullRequests"] = []
+
+    def set_error(self):
+        self.val = {"errors": [{"message": "foo"}]}
+
     def run_query(self, *args, **kwargs):
         return self.val
 
@@ -52,3 +58,21 @@ def test_pull_request_dicts_should_have_correct_content():
     assert pull_request_dicts[0]["body"] == "test"
     assert pull_request_dicts[0]["deploy_sha"] == "fake sha"
     assert pull_request_dicts[0]["labels"]["nodes"][0]["name"] == "fake label"
+
+
+def test_method_is_failsafe(caplog):
+    m.set_no_associated_prs()
+
+    sha = "fake sha"
+    p.pull_request_dicts([sha])
+    assert (
+        caplog.records[0].message == f"commit {sha} not found or has no associated PRs"
+    )
+
+
+def test_method_logs_errors(caplog):
+    m.set_error()
+
+    sha = "fake sha"
+    p.pull_request_dicts([sha])
+    assert caplog.records[0].message == f"error with sha {sha}: foo"
