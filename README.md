@@ -82,3 +82,11 @@ We welcome contributions!
 * To setup the repo run `python -m pip install -r dev-requirements.pip`.
 * To run the script run `python -m rocket_releaser` from the root of the repo with your desired arguments. Trying to run the release notes script from the command line directly will result in a ImportError!
 * To run tests run `pytest` from the root of the repo
+
+
+### Generating Code Coverage
+Follow the instructions in https://coverage.readthedocs.io/en/coverage-5.5/
+Make note of the following:
+* To prevent site packages from being shown in coverage, run `coverage run --source rocket_releaser -m pytest`
+* To open a html file in WSL, run explorer.exe index.html in the htmlcov directory.
+* There is a handy makefile coverage command to use if you wish
