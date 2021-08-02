@@ -13,8 +13,12 @@ class MockGraphQL:
         }
     }
 
-    def set_return_val(self, number, body):
-        node = {"number": number, "body": body}
+    def set_return_val(self, number, body, label_name):
+        node: dict = {
+            "number": number,
+            "body": body,
+            "labels": {"nodes": [{"name": label_name}]},
+        }
         self.val["data"]["repository"]["commit"]["associatedPullRequests"]["edges"][0][
             "node"
         ] = node
@@ -40,10 +44,11 @@ def mock_graphql(mocker: MockFixture):
 
 
 def test_pull_request_dicts_should_have_correct_content():
-    m.set_return_val(12, "test")
+    m.set_return_val(12, "test", "fake label")
 
     pull_request_dicts = p.pull_request_dicts(["fake sha"])
     assert len(pull_request_dicts) == 1
     assert pull_request_dicts[0]["number"] == 12
     assert pull_request_dicts[0]["body"] == "test"
     assert pull_request_dicts[0]["deploy_sha"] == "fake sha"
+    assert pull_request_dicts[0]["labels"]["nodes"][0]["name"] == "fake label"

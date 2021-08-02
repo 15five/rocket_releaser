@@ -27,7 +27,9 @@ class PRs:
 
         # number of associatedPullRequests to pull is entirely arbitrary
         # 99% of cases it should only be 1 anyways
-        query = """
+        # Example query variables:
+        # {"sha": "fa6e8664600bcf1ff6c2968c74e7555eb1370aaa", "repo": "rocket_releaser", "owner": "15five"}
+        query: str = """
 query associatedPRs($sha: String, $repo: String!, $owner: String!){
   repository(name: $repo, owner: $owner) {
     commit: object(expression: $sha) {
@@ -39,6 +41,11 @@ query associatedPRs($sha: String, $repo: String!, $owner: String!){
               number
               body
               merged
+              labels(first:100) {
+                nodes{
+                  name
+                }
+              }
             }
           }
         }
