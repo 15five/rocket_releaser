@@ -1,4 +1,5 @@
 {
+    "hotfix_alert_format": ":fire: *HOTFIX* :fire: ",
     "note_format": "• $DESCRIPTION <$TICKET_LINK|$TICKET_ID> <$PR_LINK|PR-$PR_ID>",
     "plaintext_format": "Release $RELEASE_NUMBER\n$RELEASE_NOTES\n*Changeset*: <$CHANGESET_LINK|$CHANGESET>\n*Stats*: $JIRA_TICKETS_NUM Jira tickets | $PR_TICKETS_NUM PR's",
     "slack_format": {
@@ -7,7 +8,7 @@
                 "type": "header",
                 "text": {
                     "type": "plain_text",
-                    "text": "Release $RELEASE_NUMBER"
+                    "text": "${HOTFIX_ALERT}Release $RELEASE_NUMBER"
                 }
             },
             {
