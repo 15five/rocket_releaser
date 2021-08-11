@@ -1,6 +1,7 @@
+from collections import defaultdict
 import re
 import logging
-from typing import List
+from typing import DefaultDict, List
 
 logger = logging.getLogger(__name__)
 
@@ -12,9 +13,6 @@ class ChangeLog:
         self.pull_request_dicts = pull_request_dicts
 
         self.features = []
-        self.fixes = []
-        self.noteworthy = []
-        self.qa_notes = []
         self.org_name = org_name
         self.repo_name = repo_name
         self.jira_url = jira_url
@@ -22,7 +20,7 @@ class ChangeLog:
     @property
     def release_bodies(self):
         return [
-            (pr.get("number"), pr.get("body"))
+            (pr.get("number"), pr.get("body"), pr.get("labels"))
             for pr in self.pull_request_dicts
             if "release" in pr.get("body").lower()
         ]
@@ -38,7 +36,7 @@ class ChangeLog:
 
     @staticmethod
     def add_github_link(org_name: str, repo_name: str, line, pr_number):
-        return f"{line} PR: <https://github.com/{org_name}/{repo_name}/pull/{pr_number}|{pr_number}>"
+        return f"{line} <https://github.com/{org_name}/{repo_name}/pull/{pr_number}|PR-{pr_number}>"
 
     @staticmethod
     def add_jira_link(line: str, jira_url: str):
@@ -49,7 +47,9 @@ class ChangeLog:
         )
 
     @staticmethod
-    def linkify(org_name: str, repo_name: str, line: str, pr_number, jira_url=""):
+    def linkify(
+        org_name: str, repo_name: str, line: str, pr_number, jira_url: str = ""
+    ):
         """add jira & github links"""
 
         if jira_url:
@@ -58,87 +58,56 @@ class ChangeLog:
         return line
 
     @staticmethod
-    def make_jira_id_bold(line: str):
-        return line.replace("[", "*[").replace("]", "]*")
+    def extract_notes_from_pr(pr_body: str, header: str):
+        """
+        Extracts the block of text under a specified header
+        """
+        # Remove HTML comments. Will not work in all cases.
+        lines = re.sub("<!--.+?>", "", pr_body, flags=re.DOTALL)
+        lines = lines.strip().split("\n")
+        # Clean lines up
+        lines = list(map(lambda line_: line_.strip().lstrip("-").strip(), lines))
+
+        features = ""
+        collecting_releases = False
+        for line in lines:
+            if collecting_releases and not line:
+                # No more lines in RELEASES block
+                break
+
+            if collecting_releases:
+                features = features + " " + line
+
+            if not collecting_releases and line.lower().startswith(header):
+                collecting_releases = True
+
+        return features
+
+    @staticmethod
+    def extract_category_from_pr(labels: List[str], category_indicator: str):
+        for label in labels:
+            if label.startswith(category_indicator):
+                return label.replace(category_indicator, "")
+        return "Uncategorized"
 
     def parse_bodies(self):
-        for pr_number, body in self.release_bodies:
-            # Remove HTML comments. Will not work in all cases.
-            lines = re.sub("<!--.+?>", "", body, flags=re.DOTALL)
-            lines = lines.strip().split("\n")
-            # Clean lines up
-            lines = list(map(lambda line_: line_.strip().lstrip("-").strip(), lines))
+        notes_by_category: DefaultDict[str, List[str]] = defaultdict(list)
+        for pr_number, body, labels in self.release_bodies:
+            features = ChangeLog.extract_notes_from_pr(body, "release")
+            linky_features = self.linkify(
+                self.org_name,
+                self.repo_name,
+                features,
+                pr_number,
+                self.jira_url,
+            )
+            category = ChangeLog.extract_category_from_pr(labels, "feat-")
+            notes_by_category[category].append("•" + linky_features)
 
-            fixes = ""
-            noteworthy = ""
-            features = ""
-            collecting_releases = False
-            for line in lines:
-                if collecting_releases and not line:
-                    # No more lines in RELEASES block
-                    break
+        release_notes = ""
+        for category in notes_by_category:
+            notes = "\n".join(notes_by_category[category])
+            notes_section = f"*{category}*\n{notes}\n\n"
+            release_notes += notes_section
 
-                if collecting_releases:
-                    if self.is_fix(line):
-                        fixes = fixes + " " + line
-                    elif self.is_noteworthy(line):
-                        line = self.make_jira_id_bold(line)
-                        noteworthy = noteworthy + " " + line
-                    else:
-                        features = features + " " + line
-
-                if not collecting_releases and line.lower().startswith("release"):
-                    collecting_releases = True
-
-            if fixes:
-                self.fixes.append(
-                    self.linkify(
-                        self.org_name, self.repo_name, fixes, pr_number, self.jira_url
-                    )
-                )
-            if noteworthy:
-                self.noteworthy.append(
-                    self.linkify(
-                        self.org_name,
-                        self.repo_name,
-                        noteworthy,
-                        pr_number,
-                        self.jira_url,
-                    )
-                )
-            if features:
-                self.features.append(
-                    self.linkify(
-                        self.org_name,
-                        self.repo_name,
-                        features,
-                        pr_number,
-                        self.jira_url,
-                    )
-                )
-
-            qa_notes = ""
-            collecting_qa_notes = False
-            for line in lines:
-                if collecting_qa_notes and not line:
-                    # No more lines in QA block
-                    break
-
-                if collecting_qa_notes:
-                    qa_notes = qa_notes + " " + line
-
-                if not collecting_qa_notes and line.lower().startswith("qa"):
-                    collecting_qa_notes = True
-
-            if qa_notes:
-                self.qa_notes.append(
-                    self.linkify(
-                        self.org_name,
-                        self.repo_name,
-                        qa_notes,
-                        pr_number,
-                        self.jira_url,
-                    )
-                )
-
-        return self
+        return release_notes
