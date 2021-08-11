@@ -36,9 +36,6 @@ Change default avatar image #public Closes [ENG-1234]
 - Add the ticket number in square brackets.
 - Indicate whether the release will close or fix a ticket with Closes or Fixes before the ticket number.
 -->
-
-QA
-default avatar image should be a penguin [ENG-1234]
 ```
 
 ## Using Ansible?:

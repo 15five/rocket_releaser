@@ -51,8 +51,7 @@ def test_release_notes_plaintext(mocker):
 RELEASES
 Fixes ENG-9999
 
-QA
-bla bla bla
+this text should be ignored
         """,
         "merged": True,
         "labels": [],
@@ -89,8 +88,6 @@ def test_release_notes_slack(mocker):
 RELEASES
 Fixes ENG-9999
 
-QA
-bla bla bla
         """,
         "merged": True,
         "labels": [],
@@ -131,9 +128,6 @@ def test_release_notes_skips_unmerged_pr(mocker):
         "body": """
 RELEASES
 Fixes ENG-9999
-
-QA
-bla bla bla
         """,
         "merged": False,
         "labels": [],
@@ -209,9 +203,6 @@ def test_turn_changelog_into_string_has_correct_num_jira_tickets(mocker):
         "body": """
 RELEASES
 feature bla which is not associated to jira ticket
-
-QA
-bla bla bla
         """,
         "labels": [],
         "merged": True,
