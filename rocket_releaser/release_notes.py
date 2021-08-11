@@ -57,6 +57,21 @@ def build_template_context(
     return template_context
 
 
+def get_config(repo_dir: str):
+    script_directory = os.path.dirname(__file__)
+    default_format_path = os.path.join(script_directory, "defaultFormat.json")
+    with open(default_format_path) as f:
+        release_notes_format: Dict[str] = json.load(f)
+    try:
+        custom_config_path = os.path.join(repo_dir, "rocket_releaser_format.json")
+        with open(custom_config_path) as f:
+            release_notes_format = json.load(f)
+    except FileNotFoundError:
+        logger.debug(f"Custom config not found in {repo_dir}, using default")
+        pass
+    return release_notes_format
+
+
 def release_notes(
     github_token: str,
     from_revision: str,
@@ -114,12 +129,7 @@ def release_notes(
         num_tickets = ticket_labeler.label_tickets(env_name, vpc_name, dry_run=dry_run)
         logger.info(f"labeled {num_tickets} tickets")
 
-    script_directory = os.path.dirname(__file__)
-    default_format_path = os.path.join(script_directory, "defaultFormat.json")
-    with open(default_format_path) as f:
-        default_format: Dict[str] = json.load(f)
-    # todo: load custom format
-    release_notes_format = default_format
+    release_notes_format = get_config(repo_dir)
 
     template_context = build_template_context(
         num_tickets,

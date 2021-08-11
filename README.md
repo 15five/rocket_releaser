@@ -38,6 +38,11 @@ Change default avatar image #public Closes [ENG-1234]
 -->
 ```
 
+## Configuration
+To configure the format of the release notes output you can create a `rocket_releaser_format.json` file in the root of your repo.
+
+You can use the default configuration as a reference: [link](rocket_releaser/defaultFormat.json)
+
 ## Using Ansible?:
 
 You can run Rocket Releaser in ansible like so:
