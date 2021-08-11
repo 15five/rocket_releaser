@@ -16,6 +16,21 @@ def test_changelog_note_should_be_in_right_format():
     )
 
 
+def test_changelog_note_uncategorized():
+    pull_request_dict = {
+        "number": 1,
+        "body": "RELEASES\nDESCRIPTION_1",
+        "labels": [],
+    }
+    assert (
+        ChangeLog([pull_request_dict], "org_name", "repo_name").parse_bodies()
+        == """*Uncategorized*
+• DESCRIPTION_1 <https://github.com/org_name/repo_name/pull/1|PR-1>
+
+"""
+    )
+
+
 def test_changelog_note_should_be_in_right_category():
     pull_request_dict_1 = {
         "number": 1,
@@ -36,6 +51,43 @@ def test_changelog_note_should_be_in_right_category():
 
 *CATEGORY2*
 • DESCRIPTION_2 <https://github.com/org_name/repo_name/pull/2|PR-2>
+
+"""
+    )
+
+
+def test_changelog_with_multiple_notes():
+    pull_request_dicts = [
+        {
+            "number": 1,
+            "body": "RELEASES\nDESCRIPTION_1",
+            "labels": ["feat-CATEGORY1"],
+        },
+        {
+            "number": 5,
+            "body": "RELEASES\nfoo",
+            "labels": ["feat-CATEGORY1"],
+        },
+        {
+            "number": 2,
+            "body": "RELEASES\nDESCRIPTION_2",
+            "labels": ["feat-CATEGORY2"],
+        },
+        {
+            "number": 6,
+            "body": "RELEASES\nfah",
+            "labels": ["feat-CATEGORY2"],
+        },
+    ]
+    assert (
+        ChangeLog(pull_request_dicts, "org_name", "repo_name").parse_bodies()
+        == """*CATEGORY1*
+• DESCRIPTION_1 <https://github.com/org_name/repo_name/pull/1|PR-1>
+• foo <https://github.com/org_name/repo_name/pull/5|PR-5>
+
+*CATEGORY2*
+• DESCRIPTION_2 <https://github.com/org_name/repo_name/pull/2|PR-2>
+• fah <https://github.com/org_name/repo_name/pull/6|PR-6>
 
 """
     )
