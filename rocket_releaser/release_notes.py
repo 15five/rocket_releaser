@@ -1,9 +1,10 @@
 import argparse
-import datetime
+import json
 import logging
+import os
 import subprocess
-from sys import stdout, argv
-from typing import List
+from string import Template
+from typing import Any, Dict, List
 
 from .changelog import ChangeLog
 from .prs import PRs
@@ -15,24 +16,19 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def turn_changelog_into_string(
-    pull_request_dicts: List[dict],
+def build_template_context(
+    num_tickets: str,
     env_name: str,
     from_revision: str,
     to_revision: str,
-    num_jira_tickets: int,
+    release_notes_format: Dict[str, Any],
+    pull_request_dicts: List[Dict],
     org_name: str,
     repo_name: str,
 ):
-
     changelog = ChangeLog(pull_request_dicts, org_name, repo_name).parse_bodies()
-
-    link = (
-        f"<https://github.com/{org_name}/{repo_name}/compare/{from_revision[:7]}...{to_revision[:7]}|"
-        f"{from_revision[:7]}...{to_revision[:7]}>"
-    )
-    now_str = datetime.datetime.now().isoformat(" ")
-    title_line = f"*{env_name.upper()} RELEASE* {now_str} ({link})"
+    if from_revision == to_revision and not changelog:
+        changelog = "Start and end commit hashes are the same - no changes for release notes to log"
 
     # assumes that env_name is the same as the branch name
     # currently for 15Five this assumption works (only difference is dev/preview but that doesnt get hotfixes)
@@ -43,41 +39,22 @@ def turn_changelog_into_string(
             for pr in pull_request_dicts
         ]
     )
+    hotfix_alert = release_notes_format["hotfix_alert_format"] if is_hotfix else ""
 
-    if is_hotfix:
-        title_line = ":fire: *HOTFIX* :fire: " + title_line
+    env_name = env_name[0].upper() + env_name[1:]
 
-    messages = [
-        title_line,
-        f"{num_jira_tickets} jira tickets found.",
-        f"{len(changelog.pull_request_dicts)} PRs found.",
-    ]
+    template_context: Dict[str, str] = {}
+    template_context["NUM_TICKETS"] = num_tickets
+    template_context["ENV"] = env_name
+    template_context["RELEASE_NOTES"] = changelog
+    template_context["NUM_PRS"] = str(len(pull_request_dicts))
+    template_context["CHANGESET"] = f"{from_revision[:7]}...{to_revision[:7]}"
+    template_context[
+        "CHANGESET_LINK"
+    ] = f"https://github.com/{org_name}/{repo_name}/compare/{template_context['CHANGESET']}"
+    template_context["HOTFIX_ALERT"] = hotfix_alert
 
-    if from_revision == to_revision:
-        messages.append(
-            "Start and end commit hashes are the same - no changes for release notes to log"
-        )
-        return "\n".join(messages)
-
-    attr_names_and_category_names = [
-        ("noteworthy", "Noteworthy Changes"),
-        ("features", "Features"),
-        ("fixes", "Fixes"),
-    ]
-
-    for attr_name, category_name in attr_names_and_category_names:
-        category_items = getattr(changelog, attr_name)
-        if category_items:
-            messages.append(f"\n*{category_name}*")
-            messages.extend(category_items)
-
-    if changelog.qa_notes and env_name.lower() in ("preview", "staging"):
-        messages.append("\n*Notes for QA*")
-        messages.extend(changelog.qa_notes)
-
-    text = "\n".join(messages)
-
-    return text
+    return template_context
 
 
 def release_notes(
@@ -122,7 +99,7 @@ def release_notes(
         pr for pr in prs.pull_request_dicts(deploy_shas) if pr["merged"]
     ]
 
-    num_jira_tickets: int = 0
+    num_tickets: int = 0
 
     if label_tickets:
         ticket_labeler = TicketLabeler(
@@ -134,26 +111,40 @@ def release_notes(
             jira_username,
             jira_url,
         )
-        num_jira_tickets = ticket_labeler.label_tickets(
-            env_name, vpc_name, dry_run=dry_run
-        )
-        logger.info(f"labeled {num_jira_tickets} tickets")
+        num_tickets = ticket_labeler.label_tickets(env_name, vpc_name, dry_run=dry_run)
+        logger.info(f"labeled {num_tickets} tickets")
 
-    slack_text = turn_changelog_into_string(
-        pull_request_dicts,
+    script_directory = os.path.dirname(__file__)
+    default_format_path = os.path.join(script_directory, "defaultFormat.json")
+    with open(default_format_path) as f:
+        default_format: Dict[str] = json.load(f)
+    # todo: load custom format
+    release_notes_format = default_format
+
+    template_context = build_template_context(
+        num_tickets,
         env_name,
         from_revision,
         to_revision,
-        num_jira_tickets,
+        release_notes_format,
+        pull_request_dicts,
         org_name,
         repo_name,
     )
 
+    plaintext = Template(release_notes_format["plaintext_format"]).substitute(
+        template_context
+    )
+    slack_text = "ahhhhh"
+    # slack_text = Template(release_notes_format["slack_format"]).substitute(
+    #    template_context
+    # )
+
     if verbose:
-        print(slack_text)
+        print(plaintext)
 
     if dry_run:
-        return slack_text
+        return plaintext
 
     if slack_webhook_key:
         logger.info(f"Pushing ChangeLog data to {env_name} Slack channel.")
@@ -163,7 +154,7 @@ def release_notes(
 
     logger.info("Done.")
 
-    return slack_text
+    return plaintext
 
 
 def get_default_repo_dir():
