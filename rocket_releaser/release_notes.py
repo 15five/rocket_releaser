@@ -132,7 +132,7 @@ def release_notes(
     release_notes_format = get_config(repo_dir)
 
     template_context = build_template_context(
-        num_tickets,
+        str(num_tickets),
         env_name,
         from_revision,
         to_revision,
@@ -145,10 +145,15 @@ def release_notes(
     plaintext = Template(release_notes_format["plaintext_format"]).substitute(
         template_context
     )
-    slack_text = "ahhhhh"
-    # slack_text = Template(release_notes_format["slack_format"]).substitute(
-    #    template_context
-    # )
+    slack_format_string = json.dumps(release_notes_format["slack_format"])
+    safe_context: Dict[str] = {}
+    for key in template_context:
+        # Prevent quotations marks or newlines from ruining JSON syntax
+        safe_context[key] = (
+            template_context[key].replace('"', '\\"').replace("\n", "\\n")
+        )
+    templated_string = Template(slack_format_string).substitute(safe_context)
+    slack_blocks = json.loads(templated_string)
 
     if verbose:
         print(plaintext)
@@ -158,7 +163,7 @@ def release_notes(
 
     if slack_webhook_key:
         logger.info(f"Pushing ChangeLog data to {env_name} Slack channel.")
-        post_deployment_message_to_slack(slack_webhook_key, slack_text)
+        post_deployment_message_to_slack(slack_webhook_key, slack_blocks)
     else:
         logger.warning("no slack webhook key. Not pushing to slack.")
 

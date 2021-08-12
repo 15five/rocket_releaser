@@ -95,18 +95,18 @@ Fixes ENG-9999
 
     mocker.patch("rocket_releaser.prs.PRs.pull_request_dicts", return_value=[mock_pr_1])
     with mocker.patch(
-        "rocket_releaser.slack.post_deployment_message_to_slack",
+        "rocket_releaser.release_notes.post_deployment_message_to_slack",
     ) as mocked_post_slack_message:
         release_notes.release_notes(
             "github_token",
-            "0782415",
-            "8038fc3",
+            "56bfe2d",
+            "fa6e866",
             "org_name",
             "repo_name",
             jira_token="jira_token",
             jira_username="",
             jira_url="",
-            dry_run=True,
+            slack_webhook_key="foo",
         )
         mocked_post_slack_message.assert_called_once()
         slack_dict: Dict[str] = mocked_post_slack_message.call_args.args[0]
