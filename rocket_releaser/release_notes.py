@@ -257,14 +257,16 @@ def main(args: List[str]):
                 "repo_name": parsed_args.repo_name,
                 "repo_dir": parsed_args.repo_dir,
                 "search_branch": parsed_args.search_branch,
-                "slack_webhook_key": "CENSORED",
+                "slack_webhook_key": "CENSORED"
+                if parsed_args.slack_webhook_key
+                else "",
                 "env_name": parsed_args.env_name,
                 "vpc_name": parsed_args.vpc_name,
                 "label_tickets": parsed_args.label_tickets,
                 "verbose": parsed_args.verbose,
                 "dry_run": parsed_args.dry_run,
                 "fetch_before": parsed_args.fetch_before,
-                "jira_token": "CENSORED",
+                "jira_token": "CENSORED" if parsed_args.jira_token else "",
                 "jira_username": parsed_args.jira_username,
                 "jira_url": parsed_args.jira_url,
             }
