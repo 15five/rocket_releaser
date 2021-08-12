@@ -94,32 +94,32 @@ Fixes ENG-9999
     }
 
     mocker.patch("rocket_releaser.prs.PRs.pull_request_dicts", return_value=[mock_pr_1])
-    with mocker.patch(
+    mocked_post_slack_message = mocker.patch(
         "rocket_releaser.release_notes.post_deployment_message_to_slack",
-    ) as mocked_post_slack_message:
-        release_notes.release_notes(
-            "github_token",
-            "56bfe2d",
-            "fa6e866",
-            "org_name",
-            "repo_name",
-            jira_token="jira_token",
-            jira_username="",
-            jira_url="",
-            slack_webhook_key="foo",
-        )
-        mocked_post_slack_message.assert_called_once()
-        slack_dict: Dict[str] = mocked_post_slack_message.call_args.args[0]
-        assert slack_dict["blocks"][0]["text"]["text"] == "Prod Release"
-        assert (
-            slack_dict["blocks"][1]["text"]["text"]
-            == "*Uncategorized*\n• Fixes ENG-9999"
-        )
-        assert (
-            slack_dict["blocks"][3]["elements"][0]["text"]
-            == """*Changeset*: <https://github.com/15five/fifteen5/compare/0782415...8038fc3|0782415...8038fc3>
-*Stats*: 0 tickets | 0 PR's"""
-        )
+    )
+    release_notes.release_notes(
+        "github_token",
+        "56bfe2d",
+        "fa6e866",
+        "org_name",
+        "repo_name",
+        jira_token="jira_token",
+        jira_username="",
+        jira_url="",
+        slack_webhook_key="foo",
+    )
+    mocked_post_slack_message.assert_called_once()
+    slack_dict: Dict[str] = mocked_post_slack_message.call_args.args[1]
+    assert slack_dict["blocks"][0]["text"]["text"] == "Prod Release"
+    assert (
+        slack_dict["blocks"][1]["text"]["text"]
+        == "*Uncategorized*\n• Fixes ENG-9999 <https://github.com/org_name/repo_name/pull/1|PR-1>\n\n"
+    )
+    assert (
+        slack_dict["blocks"][3]["elements"][0]["text"]
+        == """*Changeset*: <https://github.com/org_name/repo_name/compare/56bfe2d...fa6e866|56bfe2d...fa6e866>
+*Stats*: 1 tickets | 1 PR's"""
+    )
 
 
 def test_release_notes_skips_unmerged_pr(mocker):
