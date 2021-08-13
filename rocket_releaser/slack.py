@@ -1,10 +1,13 @@
+from typing import Dict, List
 import slacker
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-def post_deployment_message_to_slack(slack_webhook_key, text):
+def post_deployment_message_to_slack(
+    slack_webhook_key: str, slack_blocks: Dict[str, List[Dict]]
+):
 
     incoming_webhook_url = f"https://hooks.slack.com/services/{slack_webhook_key}"
 
@@ -16,11 +19,12 @@ def post_deployment_message_to_slack(slack_webhook_key, text):
     display_name = "Deployment Team"
     icon_url = ":rocket:"
 
-    slack.incomingwebhook.post(
+    response = slack.incomingwebhook.post(
         {
-            "text": text,
+            "blocks": slack_blocks["blocks"],
             "username": display_name,
             "icon_url": icon_url,
             "icon_emoji": icon_url,
         }
     )
+    response.raise_for_status()

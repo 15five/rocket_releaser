@@ -1,0 +1,35 @@
+{
+    "hotfix_alert_format": ":fire: HOTFIX :fire: ",
+    "note_format": "~~currently not used~~• $DESCRIPTION <$TICKET_LINK|$TICKET_ID> <$PR_LINK|PR-$PR_ID>",
+    "plaintext_format": "${HOTFIX_ALERT}${ENV} Release\n$RELEASE_NOTES\n*Changeset*: <$CHANGESET_LINK|$CHANGESET>\n*Stats*: $NUM_TICKETS tickets | $NUM_PRS PR's",
+    "slack_format": {
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "${HOTFIX_ALERT}${ENV} Release"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "$RELEASE_NOTES"
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Changeset*: <$CHANGESET_LINK|$CHANGESET>\n*Stats*: $NUM_TICKETS tickets | $NUM_PRS PR's"
+                    }
+                ]
+            }
+        ]
+    }
+}

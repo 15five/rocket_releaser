@@ -36,10 +36,12 @@ Change default avatar image #public Closes [ENG-1234]
 - Add the ticket number in square brackets.
 - Indicate whether the release will close or fix a ticket with Closes or Fixes before the ticket number.
 -->
-
-QA
-default avatar image should be a penguin [ENG-1234]
 ```
+
+## Configuration
+To configure the format of the release notes output you can create a `rocket_releaser_format.json` file in the root of your repo.
+
+You can use the default configuration as a reference: [link](rocket_releaser/defaultFormat.json)
 
 ## Using Ansible?:
 
@@ -76,3 +78,17 @@ Q: Why use this over [semantic-release](https://github.com/semantic-release/sema
 
 A: Semantic-release's [slack plugin](https://github.com/juliuscc/semantic-release-slack-bot) as of 05/21 does not generate an extended changelog. Semantic Release does not have a plugin for tagging github PR's or tickets either, as far as I am aware.
 
+## Contributing to this repo:
+We welcome contributions! 
+
+* To setup the repo run `python -m pip install -r dev-requirements.pip`.
+* To run the script run `python -m rocket_releaser` from the root of the repo with your desired arguments. Trying to run the release notes script from the command line directly will result in a ImportError!
+* To run tests run `pytest` from the root of the repo
+
+
+### Generating Code Coverage
+Follow the instructions in https://coverage.readthedocs.io/en/coverage-5.5/
+Make note of the following:
+* To prevent site packages from being shown in coverage, run `coverage run --source rocket_releaser -m pytest`
+* To open a html file in WSL, run explorer.exe index.html in the htmlcov directory.
+* There is a handy makefile coverage command to use if you wish
