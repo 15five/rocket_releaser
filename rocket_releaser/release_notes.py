@@ -153,7 +153,7 @@ def release_notes(
             template_context[key].replace('"', '\\"').replace("\n", "\\n")
         )
     templated_string = Template(slack_format_string).substitute(safe_context)
-    slack_blocks = json.loads(templated_string)
+    slack_blocks: Dict[str] = json.loads(templated_string)
 
     if verbose:
         print(plaintext)
