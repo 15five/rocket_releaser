@@ -53,7 +53,7 @@ workflows:
 jobs:
   lint:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.7
     steps:
       - checkout
       - restore_cache:
@@ -81,7 +81,7 @@ jobs:
         type: string
         default: latest
     docker:
-      - image: circleci/python:<< parameters.version >>
+      - image: cimg/python:<< parameters.version >>
     steps:
       - checkout
       - restore_cache:
@@ -120,13 +120,13 @@ jobs:
           path: htmlcov.tar
   integration:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.7
     steps:
       - run: echo "It works!"
       - run: echo $RUN_EXTRA_TESTS
   deploy:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.7
     steps:
       - checkout
       - restore_cache:
