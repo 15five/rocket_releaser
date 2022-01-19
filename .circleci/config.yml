@@ -9,11 +9,6 @@ workflows:
               ignore:
                 - master
       - test-python:
-          name: test-python3.6
-          version: "3.6"
-          requires:
-            - lint
-      - test-python:
           name: test-python3.7
           version: "3.7"
           requires:
@@ -30,11 +25,6 @@ workflows:
             branches:
               only:
                 - master
-      - test-python:
-          name: test-python3.6
-          version: "3.6"
-          requires:
-            - lint
       - test-python:
           name: test-python3.7
           version: "3.7"
@@ -58,7 +48,6 @@ workflows:
           # requires:
           #   - hold-deploy
           requires:
-            - test-python3.6
             - test-python3.7
             - test-python3.8
 jobs:
