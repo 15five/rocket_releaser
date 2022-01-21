@@ -9,11 +9,6 @@ workflows:
               ignore:
                 - master
       - test-python:
-          name: test-python3.6
-          version: "3.6"
-          requires:
-            - lint
-      - test-python:
           name: test-python3.7
           version: "3.7"
           requires:
@@ -30,11 +25,6 @@ workflows:
             branches:
               only:
                 - master
-      - test-python:
-          name: test-python3.6
-          version: "3.6"
-          requires:
-            - lint
       - test-python:
           name: test-python3.7
           version: "3.7"
@@ -58,17 +48,16 @@ workflows:
           # requires:
           #   - hold-deploy
           requires:
-            - test-python3.6
             - test-python3.7
             - test-python3.8
 jobs:
   lint:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.7
     steps:
       - checkout
       - restore_cache:
-          key: v2-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
+          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
       # see https://github.com/pypa/pip/issues/4537 for why we need to install_egg_info
       - run:
           name: install python dependencies
@@ -78,7 +67,7 @@ jobs:
             python setup.py install_egg_info
             make dev
       - save_cache:
-          key: v2-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
+          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
           paths:
             - "venv"
       - run:
@@ -92,11 +81,11 @@ jobs:
         type: string
         default: latest
     docker:
-      - image: circleci/python:<< parameters.version >>
+      - image: cimg/python:<< parameters.version >>
     steps:
       - checkout
       - restore_cache:
-          key: v2-dep-cache-<< parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
+          key: v3-dep-cache-<< parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
       # see https://github.com/pypa/pip/issues/4537 for why we need to install_egg_info
       - run:
           name: install python dependencies
@@ -106,7 +95,7 @@ jobs:
             python setup.py install_egg_info
             make dev
       - save_cache:
-          key: v2-dep-cache-<< parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
+          key: v3-dep-cache-<< parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
           paths:
             - "venv"
       - run:
@@ -131,17 +120,17 @@ jobs:
           path: htmlcov.tar
   integration:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.7
     steps:
       - run: echo "It works!"
       - run: echo $RUN_EXTRA_TESTS
   deploy:
     docker:
-      - image: circleci/python:3.7
+      - image: cimg/python:3.7
     steps:
       - checkout
       - restore_cache:
-          key: v2-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
+          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
       # see https://github.com/pypa/pip/issues/4537 for why we need to install_egg_info
       - run:
           name: install python dependencies
@@ -151,7 +140,7 @@ jobs:
             python setup.py install_egg_info
             make dev
       - save_cache:
-          key: v2-dep-cache-3.6-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
+          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
           paths:
             - "venv"
       - run:
