@@ -174,13 +174,6 @@ class TicketLabeler:
                             if not dry_run:
                                 self.mark_in_review_jira_ticket(issue)
 
-                        elif env_name == self.STAGING_ENV_NAME:
-                            logger.info(
-                                "env_name matches staging - marking jira ticket as ready to test"
-                            )
-                            if not dry_run:
-                                self.mark_ready_test_jira_ticket(issue)
-
                         # we don't have enough qa currently to test everything before it goes to prod
                         # so we don't close the ticket when it hits prod in case it still needs testing
                         # elif env_name == self.PRODUCTION_ENV_NAME:
