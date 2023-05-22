@@ -35,7 +35,7 @@ setup(
         "github3.py==1.2.0",
         "gitdb2==3.0.1",
         "slacker==0.9.65",
-        "requests==2.22.0",
+        "requests==2.31.0",
     ],
     python_requires=">=3.6",
 )
