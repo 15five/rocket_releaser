@@ -4,7 +4,6 @@ from setuptools import setup, find_packages
 
 VERSION = "0.1.1"
 
-
 setup(
     name="rocket_releaser",
     version=VERSION,
@@ -24,9 +23,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Internet",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.12",
     ],
     keywords="release-notes release-automation",
     packages=find_packages(),
