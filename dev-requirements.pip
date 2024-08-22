@@ -5,6 +5,8 @@ black>=24
 isort>=5
 
 # Testing Libraries
+pytest>=8
+pytest-mock>=3
 coverage>=7
 GitPython>=3
 
