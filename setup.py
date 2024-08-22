@@ -27,11 +27,6 @@ setup(
     ],
     keywords="release-notes release-automation",
     packages=find_packages(),
-    install_requires=[
-        "gitdb2>=4",
-        "github3.py>=4",
-        "jira>=3",
-        "slacker"
-    ],
+    install_requires=["gitdb2>=4", "github3.py>=4", "jira>=3", "slacker"],
     python_requires=">=3.9",
 )
