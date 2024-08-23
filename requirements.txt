@@ -2,3 +2,4 @@ gitdb2>=4
 github3.py>=4
 jira>=3
 slacker
+awscli>=1.30
