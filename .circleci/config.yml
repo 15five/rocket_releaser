@@ -15,16 +15,9 @@ jobs:
           password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
-      - restore_cache:
-          key: rr-<< pipeline.parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
       - run:
           name: install python dependencies
           command: make dev
-      - save_cache:
-          key: rr-<< pipeline.parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-          paths:
-            - "venv"
-            - "rocket_releaser.egg-info"
       - run:
           name: lint
           command: make lint
@@ -33,16 +26,9 @@ jobs:
       - image: cimg/python:<< pipeline.parameters.version >>
     steps:
       - checkout
-      - restore_cache:
-          key: rr-<< pipeline.parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
       - run:
           name: install python dependencies
           command: make dev
-      - save_cache:
-          key: rr-<< pipeline.parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-          paths:
-            - "venv"
-            - "rocket_releaser.egg-info"
       - run:
           name: run tests
           command: |
@@ -72,8 +58,6 @@ jobs:
       - image: cimg/python:3.12
     steps:
       - checkout
-      - restore_cache:
-          key: rr-<< pipeline.parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
       # see https://github.com/pypa/pip/issues/4537 for why we need to install_egg_info
       - run:
           name: install python dependencies
@@ -82,10 +66,6 @@ jobs:
             . venv/bin/activate
             python setup.py install_egg_info
             make dev
-      - save_cache:
-          key: rr-<< pipeline.parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-          paths:
-            - "venv"
       - run:
           name: init .pypirc
           command: |
