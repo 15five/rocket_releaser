@@ -1,107 +1,37 @@
 version: 2.1
 
-workflows:
-  lint_and_test_pr:
-    jobs:
-      - lint:
-          filters:
-            branches:
-              ignore:
-                - master
-      - test-python:
-          name: test-python3.7
-          version: "3.7"
-          requires:
-            - lint
-      - test-python:
-          name: test-python3.8
-          version: "3.8"
-          requires:
-            - lint
-  lint_test_deploy:
-    jobs:
-      - lint:
-          filters:
-            branches:
-              only:
-                - master
-      - test-python:
-          name: test-python3.7
-          version: "3.7"
-          requires:
-            - lint
-      - test-python:
-          name: test-python3.8
-          version: "3.8"
-          requires:
-            - lint
-      # Don't want to deploy every push to master?
-      # You can switch to manual approval if desired
-      # Uncomment below and get rid of requirement for test-python
-      # - hold-deploy:
-      #     type: approval
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
-      - deploy:
-          # requires:
-          #   - hold-deploy
-          requires:
-            - test-python3.7
-            - test-python3.8
+
+parameters:
+  version:
+    type: string
+    default: "3.12"
+
 jobs:
   lint:
     docker:
-      - image: cimg/python:3.7
+      - image: cimg/python:3.12
+        auth:
+          username: fforchestration
+          password: $DOCKERHUB_PASSWORD
     steps:
       - checkout
-      - restore_cache:
-          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-      # see https://github.com/pypa/pip/issues/4537 for why we need to install_egg_info
       - run:
           name: install python dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            python setup.py install_egg_info
-            make dev
-      - save_cache:
-          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-          paths:
-            - "venv"
+          command: make dev
       - run:
           name: lint
-          command: |
-            . venv/bin/activate
-            make lint
+          command: make lint
   test-python:
-    parameters:
-      version:
-        type: string
-        default: latest
     docker:
-      - image: cimg/python:<< parameters.version >>
+      - image: cimg/python:<< pipeline.parameters.version >>
     steps:
       - checkout
-      - restore_cache:
-          key: v3-dep-cache-<< parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-      # see https://github.com/pypa/pip/issues/4537 for why we need to install_egg_info
       - run:
           name: install python dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            python setup.py install_egg_info
-            make dev
-      - save_cache:
-          key: v3-dep-cache-<< parameters.version >>-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-          paths:
-            - "venv"
+          command: make dev
       - run:
           name: run tests
           command: |
-            . venv/bin/activate
             mkdir test-results
             coverage run --source=. --omit=venv/* -m pytest --junitxml=test-results/junit.xml
             coverage report -m
@@ -109,7 +39,6 @@ jobs:
       - run:
           name: run integration test
           command: |
-            . venv/bin/activate
             python -m rocket_releaser $GITHUB_TOKEN 82a86d4 9253704 15five rocket_releaser --vpc_name production_1 --env_name production --search_branch master
       - run:
           name: Compress Artifacts
@@ -120,29 +49,22 @@ jobs:
           path: htmlcov.tar
   integration:
     docker:
-      - image: cimg/python:3.7
+      - image: cimg/python:3.12
     steps:
       - run: echo "It works!"
       - run: echo $RUN_EXTRA_TESTS
   deploy:
     docker:
-      - image: cimg/python:3.7
+      - image: cimg/python:3.12
     steps:
       - checkout
-      - restore_cache:
-          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
       # see https://github.com/pypa/pip/issues/4537 for why we need to install_egg_info
       - run:
           name: install python dependencies
           command: |
             python3 -m venv venv
-            . venv/bin/activate
             python setup.py install_egg_info
             make dev
-      - save_cache:
-          key: v3-dep-cache-3.7-{{ checksum "requirements.txt" }}-{{ checksum "dev-requirements.pip" }}
-          paths:
-            - "venv"
       - run:
           name: init .pypirc
           command: |
@@ -156,5 +78,33 @@ jobs:
       - run:
           name: upload to pypi
           command: |
-            . venv/bin/activate
             twine upload dist/*
+
+workflows:
+  lint_and_test_pr:
+    jobs:
+      - lint:
+          filters:
+            branches:
+              ignore:
+                - master
+      - test-python:
+          name: test-python
+          requires:
+            - lint
+  lint_test_deploy:
+    jobs:
+      - lint:
+          filters:
+            branches:
+              only:
+                - master
+      - test-python:
+          name: test-python
+          requires:
+            - lint
+      - deploy:
+          # requires:
+          #   - hold-deploy
+          requires:
+            - test-python

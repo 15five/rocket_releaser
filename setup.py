@@ -2,17 +2,16 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "0.1.0"
-
+VERSION = "0.1.1a"
 
 setup(
     name="rocket_releaser",
     version=VERSION,
     description="Script for release notes and labeling upon deploys",
-    long_description="see repo for readme",
+    long_description="See repo for README.md",
     url="https://github.com/15five/rocket_releaser",
     author="15Five",
-    author_email="caleb@15five.com",
+    author_email="devops@15five.com",
     license="MIT",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
@@ -24,18 +23,10 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Internet",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.12",
     ],
     keywords="release-notes release-automation",
     packages=find_packages(),
-    install_requires=[
-        "jira==2.0.0",
-        "github3.py==1.2.0",
-        "gitdb2==3.0.1",
-        "slacker==0.9.65",
-        "requests==2.22.0",
-    ],
-    python_requires=">=3.6",
+    install_requires=["gitdb2>=4", "github3.py>=4", "jira>=3", "slacker"],
+    python_requires=">=3.9",
 )
