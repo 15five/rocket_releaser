@@ -10,7 +10,7 @@ def mock_reqs(mocker):
     mocker.patch("github3.GitHub")
     mocker.patch("jira.JIRA")
     mocker.patch("rocket_releaser.prs.GraphQL")
-    mocker.patch("rocket_releaser.slack.slacker")
+    mocker.patch("rocket_releaser.slack.requests.post")
 
 
 def test_main():
