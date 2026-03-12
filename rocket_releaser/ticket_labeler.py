@@ -57,9 +57,7 @@ class TicketLabeler:
         (?P<transition>{transition_kw_options})?  # optional keywords that mark Jira transitions
         \s*                                       # optional whitespace character
         (?P<issue>\[*[A-Z]{{2,}}-\d+\]*)          # Jira issue name. Match examples: [ENG-123], ENG-123, DIV-1234
-    """.format(
-            transition_kw_options="|".join(TRANSITION_KEYWORDS)
-        ),
+    """.format(transition_kw_options="|".join(TRANSITION_KEYWORDS)),
         flags=re.VERBOSE | re.IGNORECASE,
     )
 

@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "0.1.1a"
+VERSION = "0.1.1"
 
 setup(
     name="rocket_releaser",
@@ -27,6 +27,6 @@ setup(
     ],
     keywords="release-notes release-automation",
     packages=find_packages(),
-    install_requires=["gitdb2>=4", "github3.py>=4", "jira>=3", "slacker"],
+    install_requires=["gitdb2>=4", "github3.py>=4", "jira>=3", "requests>=2.28"],
     python_requires=">=3.9",
 )
